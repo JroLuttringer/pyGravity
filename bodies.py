@@ -1,13 +1,24 @@
 from misc import *
+from collections import deque
+
 
 class body:
-	def __init__(self, pos, density=0.001):
+	def __init__(self, pos, density=0.001, type = PLANET):
 		self._mass = density*4.0*math.pi*(1.5**3.0)/3.0
 		self._density = density
 		self._pos = pos
 		self._radius = 1.5
-		self._vel = Vector2D((0.0,3.0))
-		self._color = WHITE
+		self._vel = Vector2D((0.0,2.0))
+		self._type = type
+		self._old_pos = deque([self._pos])
+		self._orbit_color = random_color()
+		self._curs = 1
+		if type == PLANET:
+			self._color = WHITE
+		elif type == SUN:
+			self._color = RED
+			self._mass *= 1000
+			self._radius = 5.
 		debug("new bodies")
 
 	def acceleration(self, all_bodies, alt_ref=None):
@@ -39,6 +50,8 @@ class body:
 		return Koefficient(vx, vy, a._x, a._y)
 
 	def set_new_position(self, bodies):
+		if self._type == SUN:
+			return
 		k1 = self.first_k(bodies)
 		k2 = self.next_k(k1, t, dt*0.5, bodies)
 		k3 = self.next_k(k2, t, dt*0.5, bodies)
@@ -47,6 +60,12 @@ class body:
 		add_y = 1.0/6.0 * (k1._dy + 2.0*(k2._dy + k3._dy) + k4._dy)
 		add_vx = 1.0/6.0 * (k1._dvx + 2.0 * (k2._dvx + k3._dvx) + k4._dvx)
 		add_vy = 1.0/6.0 * (k1._dvy + 2.0 * (k2._dvy + k3._dvy) + k4._dvy)
+		#self._curs = (self._curs + 1) % MAX_TRAIL
+		self._old_pos.append(Vector2D((self._pos._x, self._pos._y)))
+		if len(self._old_pos) > MAX_TRAIL:
+			#self._old_pos.rotate(1)
+			self._old_pos.popleft()
+
 		self._pos._x += add_x*dt
 		self._pos._y += add_y*dt
 		self._vel._x += add_vx*dt
@@ -56,4 +75,14 @@ class body:
 
 
 	def draw(self, pywindow):
+		if self._type == SUN:
+			self._color = (self._color[0], (self._color[1] + 0.30)%255, self._color[2])
+		for i in range(len(self._old_pos) -1, 0, -1):
+			from_point = self._old_pos[i]
+			to_point = self._old_pos[(i-1)]
+			if from_point is None:
+				break
+			if to_point is None:
+				break
+			pygame.draw.line(pywindow, self._orbit_color, from_point.to_tuple(), to_point.to_tuple(), int(i/5*self._radius))
 		pygame.draw.circle(pywindow, self._color, (int(self._pos._x), int(self._pos._y)), int(self._radius*10), int(self._radius*10))

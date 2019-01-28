@@ -26,23 +26,16 @@ def main():
 				mouse_pos = Vector2D(pygame.mouse.get_pos())
 				if event.button == 1:
 					debug("event mouse left")
-					celestial_bodies.append(body(mouse_pos))
+					if len(celestial_bodies) == 0:
+						celestial_bodies.append(body(mouse_pos, type = SUN))
+					else:
+						celestial_bodies.append(body(mouse_pos))
 
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
-		first = False
 		for c in celestial_bodies:
-			if not first:
-				first = True
-				if not adjusted:
-					c._color = (255,0,0)
-					c._mass *= 1000
-					c._radius += 1.5
-					adjusted = True
-				continue
 			c.set_new_position(celestial_bodies)
-
 		refresh(pywindow,celestial_bodies)
 
 
