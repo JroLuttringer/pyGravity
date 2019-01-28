@@ -74,9 +74,11 @@ class body:
 
 
 
-	def draw(self, pywindow):
+	def draw(self, pywindow, bodies):
 		if self._type == SUN:
 			self._color = (self._color[0], (self._color[1] + 0.30)%255, self._color[2])
+			for b in bodies:
+				pygame.draw.line(pywindow, b._orbit_color, self._pos.to_tuple(), b._pos.to_tuple(), 1)
 		for i in range(len(self._old_pos) -1, 0, -1):
 			from_point = self._old_pos[i]
 			to_point = self._old_pos[(i-1)]

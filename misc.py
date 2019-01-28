@@ -37,7 +37,7 @@ def refresh(pywindow, bodies):
 	#	pygame.draw.line(pywindow, WHITE, (0,y),(WIDTH,y), 1)
 
 	for b in bodies:
-		b.draw(pywindow)
+		b.draw(pywindow, bodies)
 
 	pygame.display.update()
 
