@@ -64,6 +64,17 @@ def distance(pos_a, pos_b):
 def newt_uni_attraction(m1, m2, r):
     return (G * m1 * m2) / (r * r)
 
+def merge_color(colora, colorb, weight):
+    r = (colora[0]*weight + colorb[0])/2
+    g = (colora[1]*weight + colorb[1])/2
+    b = (colora[2]*weight + colorb[2])/2
+    r = min(r,255)
+    g = min(g,255)
+    b = min(b,255)
+    colorc = (int(r),int(g),int(b))
+    print("{} {} {}".format(colora, colorb, colorc))
+    return colorc
+
 
 class Vector2D:
     def __init__(self, pos):

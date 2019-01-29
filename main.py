@@ -37,6 +37,8 @@ def main():
                 sys.exit()
         for c in celestial_bodies:
             c.set_new_position(celestial_bodies)
+        for c in celestial_bodies:
+            c.check_collision(celestial_bodies)
         refresh(pywindow, celestial_bodies)
 
 
