@@ -10,7 +10,7 @@ DEBUG = True
 
 WIDTH = 3000
 HEIGHT = 2000
-G = 1.e4
+G = 8e3
 t = 0.0
 dt = 3
 
@@ -22,6 +22,10 @@ MAX_TRAIL = 100
 def debug(str):
     if DEBUG:
         print(str)
+
+def draw_pause_symbol(pywindow):
+    pygame.draw.rect(pywindow, WHITE, [10,10,80,200])
+    pygame.draw.rect(pywindow, WHITE, [110,10,85,200])
 
 
 def compute_radius(mass, density):
@@ -47,10 +51,12 @@ def draw_grid(pywindow):
         pygame.draw.line(pywindow, WHITE, (0, y), (WIDTH, y), 1)
 
 
-def refresh(pywindow, bodies):
+def refresh(pywindow, bodies, pause):
     pywindow.fill(BLACK)
     for b in bodies:
         b.draw(pywindow, bodies)
+    if pause:
+        draw_pause_symbol(pywindow)
     pygame.display.update()
 
 
@@ -64,14 +70,15 @@ def distance(pos_a, pos_b):
 def newt_uni_attraction(m1, m2, r):
     return (G * m1 * m2) / (r * r)
 
+
 def merge_color(colora, colorb, weight):
-    r = (colora[0]*weight + colorb[0])/2
-    g = (colora[1]*weight + colorb[1])/2
-    b = (colora[2]*weight + colorb[2])/2
-    r = min(r,255)
-    g = min(g,255)
-    b = min(b,255)
-    colorc = (int(r),int(g),int(b))
+    r = (colora[0] * weight + colorb[0]) / 2
+    g = (colora[1] * weight + colorb[1]) / 2
+    b = (colora[2] * weight + colorb[2]) / 2
+    r = min(r, 255)
+    g = min(g, 255)
+    b = min(b, 255)
+    colorc = (int(r), int(g), int(b))
     print("{} {} {}".format(colora, colorb, colorc))
     return colorc
 

@@ -2,6 +2,8 @@ from misc import *
 from collections import deque
 
 density = 0.001
+
+
 class body:
     def __init__(self, pos, density=0.001, type=PLANET):
         self._density = density
@@ -71,7 +73,7 @@ class body:
         self._vel._y += add_vy * dt
 
     def touch(self, body):
-        return distance(self._pos, body._pos) <= (self._radius*10+body._radius*10)
+        return distance(self._pos, body._pos) <= (self._radius * 10 + body._radius * 10)
 
     def merge(self, body, bodies):
         if self._mass >= body._mass:
@@ -80,12 +82,16 @@ class body:
         else:
             big_body = body
             small_body = smell
-        vx = (big_body._vel._x*big_body._mass+small_body._vel._x*small_body._mass) / (small_body._mass+big_body._mass)
-        vy = (big_body._vel._y*big_body._mass+small_body._vel._y*small_body._mass) / (small_body._mass+big_body._mass)
+        vx = (big_body._vel._x * big_body._mass + small_body._vel._x *
+              small_body._mass) / (small_body._mass + big_body._mass)
+        vy = (big_body._vel._y * big_body._mass + small_body._vel._y *
+              small_body._mass) / (small_body._mass + big_body._mass)
         big_body._mass += small_body._mass
         big_body._radius = compute_radius(big_body._mass, density)
-        big_body._color = merge_color(big_body._color, small_body._color, big_body._mass/small_body._mass)
-        big_body._orbit_color = merge_color(big_body._orbit_color, small_body._orbit_color, big_body._mass/small_body._mass)
+        big_body._color = merge_color(big_body._color, small_body._color,
+                                      big_body._mass / small_body._mass)
+        big_body._orbit_color = merge_color(
+            big_body._orbit_color, small_body._orbit_color, big_body._mass / small_body._mass)
         big_body._vel._x = vx
         big_body._vel._y = vy
         bodies.remove(small_body)
@@ -95,7 +101,7 @@ class body:
             if b is self:
                 continue
             if self.touch(b):
-                self.merge(b,bodies)
+                self.merge(b, bodies)
 
     def draw(self, pywindow, bodies):
         if self._type == SUN:

@@ -20,9 +20,11 @@ def main():
     celestial_bodies = []
     adjusted = False
 
+    pause = False
+
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and not pause:
                 debug("event detected")
                 mouse_pos = Vector2D(pygame.mouse.get_pos())
                 if event.button == 1:
@@ -31,15 +33,20 @@ def main():
                         celestial_bodies.append(body(mouse_pos, type=SUN))
                     else:
                         celestial_bodies.append(body(mouse_pos))
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    debug("SPACE __ PAUSED")
+                    pause = not pause
 
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        for c in celestial_bodies:
-            c.set_new_position(celestial_bodies)
-        for c in celestial_bodies:
-            c.check_collision(celestial_bodies)
-        refresh(pywindow, celestial_bodies)
+        if not pause:
+            for c in celestial_bodies:
+                c.set_new_position(celestial_bodies)
+            for c in celestial_bodies:
+                c.check_collision(celestial_bodies)
+        refresh(pywindow, celestial_bodies, pause)
 
 
 if __name__ == "__main__":
