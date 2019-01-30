@@ -18,6 +18,36 @@ SUN = 0
 PLANET = 1
 MAX_TRAIL = 100
 
+def sign(a):
+    if a < 0:
+        return -1
+    elif a > 0:
+        return 1
+    else:
+        return 0
+
+def update_center(bodies, max_mass):
+    i = 0
+    for b in bodies:
+        if b._mass > max_mass:
+            return i
+        i += 1
+    return None
+
+def center_window(pywindow, bodies, center, pause):
+    center = bodies[center]
+    mid_x = int(WIDTH/2)
+    mid_y = int(HEIGHT/2)
+    while abs(center._pos._x - mid_x) > 10 or abs(center._pos._y - mid_y) > 10:
+        x_shift = sign(mid_x - center._pos._x)
+        y_shift = sign(mid_y - center._pos._y)
+        for b in bodies:
+            b._pos._x += x_shift*9
+            b._pos._y += y_shift*9
+        refresh(pywindow,bodies,pause)
+
+
+
 
 def debug(str):
     if DEBUG:

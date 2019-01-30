@@ -81,7 +81,7 @@ class body:
             small_body = body
         else:
             big_body = body
-            small_body = smell
+            small_body = self
         vx = (big_body._vel._x * big_body._mass + small_body._vel._x *
               small_body._mass) / (small_body._mass + big_body._mass)
         vy = (big_body._vel._y * big_body._mass + small_body._vel._y *
