@@ -28,14 +28,18 @@ def sign(a):
 
 def update_center(bodies, max_mass):
     i = 0
+    if max_mass is None:
+        return bodies[0]
+
+    #debug('current max mass ' + str(bodies[max_mass]._mass))
     for b in bodies:
-        if b._mass > max_mass:
-            return i
+        debug(b._mass)
+        if b._mass > max_mass._mass:
+            return b
         i += 1
     return None
 
 def center_window(pywindow, bodies, center, pause):
-    center = bodies[center]
     mid_x = int(WIDTH/2)
     mid_y = int(HEIGHT/2)
     while abs(center._pos._x - mid_x) > 10 or abs(center._pos._y - mid_y) > 10:
@@ -44,7 +48,7 @@ def center_window(pywindow, bodies, center, pause):
         for b in bodies:
             b._pos._x += x_shift*9
             b._pos._y += y_shift*9
-        refresh(pywindow,bodies,pause)
+        refresh(pywindow,bodies,True)
 
 
 
@@ -84,7 +88,7 @@ def draw_grid(pywindow):
 def refresh(pywindow, bodies, pause):
     pywindow.fill(BLACK)
     for b in bodies:
-        b.draw(pywindow, bodies)
+        b.draw(pywindow, bodies, pause)
     if pause:
         draw_pause_symbol(pywindow)
     pygame.display.update()

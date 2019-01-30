@@ -21,7 +21,7 @@ def main():
     adjusted = False
 
     pause = False
-    max_mass = 0
+    max_mass = None
 
     while True:
         added_bodies = False
@@ -49,14 +49,16 @@ def main():
                 sys.exit()
         if not pause:
             for c in celestial_bodies:
-                c.set_new_position(celestial_bodies)
+                c.set_new_position(celestial_bodies, max_mass)
             for c in celestial_bodies:
-                new_masses = c.check_collision(celestial_bodies)
-                added_bodies = True
+                collision = c.check_collision(celestial_bodies)
+                if collision:
+                    added_bodies = True
 
         if added_bodies:
             new_mass = update_center(celestial_bodies, max_mass)
             if new_mass is not None:
+                debug("max mass changed " + str(new_mass))
                 max_mass = new_mass
                 center_window(pywindow, celestial_bodies, max_mass, pause)
 

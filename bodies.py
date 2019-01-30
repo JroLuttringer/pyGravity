@@ -50,7 +50,7 @@ class body:
         a = self.acceleration(bodies, alt_ref=Vector2D((x, y)))
         return Koefficient(vx, vy, a._x, a._y)
 
-    def set_new_position(self, bodies):
+    def set_new_position(self, bodies, max):
         if self._type == SUN:
             return
         k1 = self.first_k(bodies)
@@ -86,7 +86,11 @@ class body:
               small_body._mass) / (small_body._mass + big_body._mass)
         vy = (big_body._vel._y * big_body._mass + small_body._vel._y *
               small_body._mass) / (small_body._mass + big_body._mass)
+        if big_body._type == SUN:
+            debug(big_body._mass)
         big_body._mass += small_body._mass
+        if big_body._type == SUN:
+            debug(big_body._mass)
         big_body._radius = compute_radius(big_body._mass, density)
         big_body._color = merge_color(big_body._color, small_body._color,
                                       big_body._mass / small_body._mass)
@@ -97,26 +101,30 @@ class body:
         bodies.remove(small_body)
 
     def check_collision(self, bodies):
+        collided = False
         for b in bodies:
             if b is self:
                 continue
             if self.touch(b):
                 self.merge(b, bodies)
+                collided = True
+        return collided
 
-    def draw(self, pywindow, bodies):
+    def draw(self, pywindow, bodies, pause):
         if self._type == SUN:
             self._color = (self._color[0], (self._color[1] + 0.30) % 255, self._color[2])
             for b in bodies:
                 pygame.draw.line(pywindow, b._orbit_color,
                                  self._pos.to_tuple(), b._pos.to_tuple(), 1)
-        for i in range(len(self._old_pos) - 1, 0, -1):
-            from_point = self._old_pos[i]
-            to_point = self._old_pos[(i - 1)]
-            if from_point is None:
-                break
-            if to_point is None:
-                break
-            pygame.draw.line(pywindow, self._orbit_color, from_point.to_tuple(),
-                             to_point.to_tuple(), int(i / 5 * self._radius))
+        if not pause:
+            for i in range(len(self._old_pos) - 1, 0, -1):
+                from_point = self._old_pos[i]
+                to_point = self._old_pos[(i - 1)]
+                if from_point is None:
+                    break
+                if to_point is None:
+                    break
+                pygame.draw.line(pywindow, self._orbit_color, from_point.to_tuple(),
+                                 to_point.to_tuple(), int(i / 5 * self._radius))
         pygame.draw.circle(pywindow, self._color, (int(self._pos._x), int(
             self._pos._y)), int(self._radius * 10), int(self._radius * 10))
