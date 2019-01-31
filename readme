@@ -7,6 +7,7 @@ methods.
 
 The simulation can be paused by pressing the space bar. By clicking on a body,
 a windows will appear which allow to add a name, change its mass and/or its density. 
+THe simulation is automatically centered on the largest body.
 
 Launch via python3 main.py
 
